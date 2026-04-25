@@ -35,6 +35,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser());
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    statusCode: 200,
+    message: 'Accredian backend is running',
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    statusCode: 200,
+    message: 'ok',
+  });
+});
+
 app.use('/AccredianEnterprise/v1/users',userRoutes);
 
 app.use((req, res) => {
