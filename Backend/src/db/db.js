@@ -1,18 +1,26 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-dotenv.config({
-    path: "../.env"
-});
 
 const connectDatabase=async ()=>{
     try {
-        const mongoUri = process.env.MONGODB_URI?.replace(/\/+$/, "") ?? "";
-        const dbName = process.env.DB_NAME?.replace(/^\/+/, "") ?? "";
-        const connectionToDB = await mongoose.connect(`${mongoUri}/${dbName}`);
-        console.log(`\n Connected to database(chill man)✔️✔️ DB HOST:${connectionToDB.connection.host}`);
+        const mongoUri =
+            process.env.MONGODB_URI?.trim() ||
+            process.env.MONGO_URI?.trim() ||
+            process.env.MONGODB_URL?.trim();
+
+        if (!mongoUri) {
+            throw new Error("Missing Mongo connection string. Set MONGODB_URI (or MONGO_URI) in Render environment variables.");
+        }
+
+        const dbName = process.env.DB_NAME?.trim();
+        const connectionToDB = await mongoose.connect(
+            mongoUri,
+            dbName ? { dbName } : undefined
+        );
+
+        console.log(`Connected to MongoDB successfully. Host: ${connectionToDB.connection.host}`);
     
     } catch (error) {
-        console.error("mongo db connection problem in ds.js file (this shit is real!!!!!!!❌❌❌❌)")
+        console.error("MongoDB connection failed in src/db/db.js:", error?.message || error);
         throw error;
     }
 }

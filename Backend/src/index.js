@@ -1,7 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({
-    path: ".env"
-});
+dotenv.config();
 import connectDatabase from "./db/db.js";
 import app from "./app.js";
 connectDatabase()
@@ -11,5 +9,6 @@ connectDatabase()
     })
 })
 .catch((error)=>{
-    console.log("Mongo db not connect !!!! /(ㄒoㄒ)/~~  error in main index.js")
+    console.error("Application startup failed due to MongoDB connection error:", error?.message || error);
+    process.exit(1);
 })

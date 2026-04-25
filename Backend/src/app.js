@@ -2,8 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/user.routes.js';
-import dotenv from 'dotenv';
-dotenv.config();
 const app = express();
 
 // app.use(cors({
@@ -12,11 +10,19 @@ const app = express();
 //   credentials: true
 // }));
 // app.options("*", cors());
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.API,
+  'http://localhost:3000',
+].filter(Boolean);
+
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    
-  ],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
