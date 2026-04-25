@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { verifyEmail } from "@/lib/auth";
 
 type VerificationState = "loading" | "success" | "error";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const [state, setState] = useState<VerificationState>("loading");
   const [message, setMessage] = useState("Verifying your email address...");
@@ -75,5 +75,25 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+function VerifyEmailFallback() {
+  return (
+    <main className="min-h-screen bg-[#f9f9f0] px-5 py-12 md:px-8">
+      <div className="mx-auto flex w-full max-w-md flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm md:p-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0f6f7c]">Account verification</p>
+        <h1 className="mt-3 text-2xl font-bold text-slate-900">Verifying...</h1>
+        <p className="mt-3 text-sm leading-6 text-slate-600">Verifying your email address...</p>
+      </div>
+    </main>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<VerifyEmailFallback />}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
