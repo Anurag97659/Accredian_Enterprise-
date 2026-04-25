@@ -14,6 +14,8 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.API,
   'http://localhost:3000',
+  'https://accredian-enterprise-rosy-xi.vercel.app',
+
 ].filter(Boolean);
 
 app.use(cors({
